@@ -5,6 +5,7 @@
 #include "fix_point.h"
 #include <cmath>
 #include <iostream>
+#include <stdlib.h>
 
 fix_point to_fix_point(float value) {
     //http://en.wikipedia.org/wiki/Q_(number_format)
@@ -28,35 +29,39 @@ float trunc(fix_point value) {
 float frac(fix_point value) {
     std::int32_t temp = value.data;
     temp = temp & 65535; // cut off leading bits
-    float result = (float)(temp * pow(2,-16));
+    float result = (float)(temp * pow(2,-16)); // no bit shift because that would lead to 0 (integer stuff)
     return result;
 
 }
 
 bool less_than(fix_point lhs, fix_point rhs) {
-    //TODO: implement me
-    return false;
+    return lhs.data < rhs.data;
 }
 
 bool equals(fix_point lhs, fix_point rhs) { return is_equal(lhs, rhs); }
 bool is_equal(fix_point lhs, fix_point rhs) {
-    //TODO: implement me
-    return false;
+    return lhs.data == rhs.data;
 }
 
 fix_point add(fix_point lhs, fix_point rhs) {
-    //TODO: implement me
-    return fix_point();
+    fix_point fp;
+    fp.data = lhs.data + rhs.data;
+    return fp;
 }
 
 fix_point sub(fix_point lhs, fix_point rhs) {
-    //TODO: implement me
-    return fix_point();
+    fix_point fp;
+    fp.data = lhs.data - rhs.data;
+    return fp;
 }
 
 fix_point mul(fix_point lhs, fix_point rhs) {
-    //TODO: implement me
-    return fix_point();
+    //http://en.wikipedia.org/wiki/Q_(number_format)
+    fix_point fp;
+    std::int64_t temp = (std::int64_t)lhs.data * (std::int64_t)rhs.data;
+    temp = temp / (std::int64_t)65536;
+    fp.data = (std::int32_t)temp;
+    return fp;
 }
 
 fix_point div(fix_point lhs, fix_point rhs) {

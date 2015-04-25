@@ -5,7 +5,6 @@
 #include "fix_point.h"
 #include <cmath>
 #include <iostream>
-#include <stdlib.h>
 
 fix_point to_fix_point(float value) {
     //http://en.wikipedia.org/wiki/Q_(number_format)
@@ -65,6 +64,8 @@ fix_point mul(fix_point lhs, fix_point rhs) {
 }
 
 fix_point div(fix_point lhs, fix_point rhs) {
-    //TODO: implement me
-    return fix_point();
+    fix_point fp;
+    std::int64_t temp = ((std::int64_t)lhs.data * 65536) / (std::int64_t)rhs.data;
+    fp.data = (std::int32_t)temp;
+    return fp;
 }

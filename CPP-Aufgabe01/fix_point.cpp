@@ -2,7 +2,7 @@
 // Created by Tom Oberhauser on 23.04.15.
 //
 
-#include "fix_point.h"
+#include "fix_point.hpp"
 #include <cmath>
 #include <iostream>
 

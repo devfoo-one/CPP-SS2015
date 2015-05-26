@@ -1,4 +1,4 @@
-#include "fix_point.h"
+#include "fix_point.hpp"
 
 #include <cassert>
 

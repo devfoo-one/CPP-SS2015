@@ -15,7 +15,6 @@ public:
     fix_point(float value);
     fix_point(double value);
     fix_point(int32_t value); //otherwise 'ambiguous conversion for functional-style cast from 'int' to 'fix_point''
-    std::int32_t getData();
     float to_float() const;
     float floor() const;
     float frac() const;

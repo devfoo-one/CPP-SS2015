@@ -23,10 +23,6 @@ fix_point::fix_point(int32_t value) :
 m_data(value) //int32_t ctor calls should already be converted to fixpoint values
 { }
 
-std::int32_t fix_point::getData() {
-    return m_data;
-}
-
 float fix_point::to_float() const {
     float result = (float)(m_data * pow(2,-16));
     return result;

@@ -9,7 +9,7 @@
 fix_point to_fix_point(float value) {
     //http://en.wikipedia.org/wiki/Q_(number_format)
     fix_point fp;
-    fp.data = (std::int32_t) (value * 65536); //bitshift by 16 bits and trim
+    fp.data = (std::int32_t) std::round(value * 65536); //bitshift by 16 bits and trim
     return fp;
 }
 

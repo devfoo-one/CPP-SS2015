@@ -10,11 +10,13 @@ m_data(0)
 { }
 
 fix_point::fix_point(float value) {
-    m_data = (std::int32_t) (value * 65536);
+//    m_data = (std::int32_t) (value * 65536);
+    m_data = (std::int32_t) std::round((value * 65536));
 }
 
 fix_point::fix_point(double value) {
-    m_data = (std::int32_t) ((float)value * 65536);
+//    m_data = (std::int32_t) ((float)value * 65536);
+    m_data = (std::int32_t) ((float)std::round(value * 65536));
 }
 
 fix_point::fix_point(int32_t value) :
@@ -58,6 +60,10 @@ fix_point fix_point::operator*(fix_point rhs) const{
 fix_point fix_point::operator/(fix_point rhs) const{
     std::int64_t temp = ((std::int64_t)m_data * 65536) / (std::int64_t)rhs.m_data;
     return fix_point((std::int32_t)temp);
+}
+
+fix_point fix_point::operator%(fix_point rhs) const {
+    return fix_point(m_data % rhs.m_data);
 }
 
 bool fix_point::operator==(fix_point rhs) const { //const weil is so, mal fragen
@@ -129,6 +135,15 @@ fix_point fix_point::operator/=(fix_point rhs) {
     return *this;
 }
 
+
+fix_point::operator float() const {
+    return to_float();
+}
+
+fix_point::operator int() const {
+    return (int)floor();
+}
+
 float floor(fix_point value) {
     return value.floor();
 }
@@ -137,18 +152,17 @@ float frac(fix_point value) {
     return value.frac();
 }
 
-fix_point sin(fix_point angle) {
-    // x−x^3/6+x^5/120
-    float x = angle.to_float();
-    float sin_x = x - (x * x * x)/6 + (x * x * x * x * x) / 120;
-    return fix_point(sin_x);
-    //TODO implement me without using floats
+fix_point sin(fix_point x) {
+    // TODO add modulo 2pi
+//    fix_point sin_x = (x - ((x * x * x)/fix_point(6.f))) + (((x * x * x * x * x) / fix_point(120.f)));
+    fix_point sin_x = (x - ((x*x*x)/fix_point(6.f))) + ((x*x*x*x*x) / fix_point(120.f)) - ((x*x*x*x*x*x*x) / fix_point(5040.f));
+    return sin_x;
 }
 
-fix_point cos(fix_point angle) {
+fix_point cos(fix_point x) {
     // 1−x^2/2+x^4/24−x^6/720
-    float x = angle.to_float();
-    float cos_x = (1 - (x * x / 2)) + ((x * x * x * x) / 24) - ((x * x * x * x * x * x) / 720);
-    return fix_point(cos_x);
-    //TODO implement me without using floats
+    // TODO add modulo 2pi
+//    fix_point cos_x = (fix_point(1.f) - (x * x / fix_point(2.f))) + ((x * x * x * x) / fix_point(24.f)) - ((x*x*x*x*x*x) / fix_point(720.f));
+    fix_point cos_x = (fix_point(1.f) - (x * x / fix_point(2.f))) + ((x * x * x * x) / fix_point(24.f)) - ((x*x*x*x*x*x) / fix_point(720.f)) + ((x*x*x*x*x*x*x*x) / fix_point(40320.f));
+    return cos_x;
 }

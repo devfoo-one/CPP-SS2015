@@ -9,7 +9,7 @@
 fix_point to_fix_point(float value) {
     //http://en.wikipedia.org/wiki/Q_(number_format)
     fix_point fp;
-    fp.data = (int) (value * 65536); //bitshift by 16 bits and trim
+    fp.data = (std::int32_t) (value * 65536); //bitshift by 16 bits and trim
     return fp;
 }
 
@@ -18,11 +18,8 @@ float to_float(fix_point value) {
     return result;
 }
 
-float floor(fix_point value) { return trunc(value); };
-float trunc(fix_point value) {
-    int integer = value.data >> 16; //without this line, it tells me that i can´t use bitshift with integers ... ???
-    //return (float) value.data >> 16;
-    return (float)integer;
+float floor(fix_point value) {
+    return (float) (value.data >> 16);
 }
 
 float frac(fix_point value) {
@@ -30,7 +27,6 @@ float frac(fix_point value) {
     temp = temp & 65535; // cut off leading bits
     float result = (float)(temp * pow(2,-16)); // no bit shift because that would lead to 0 (integer stuff)
     return result;
-
 }
 
 bool less_than(fix_point lhs, fix_point rhs) {

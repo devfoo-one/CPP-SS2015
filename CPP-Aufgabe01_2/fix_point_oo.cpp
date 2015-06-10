@@ -21,6 +21,10 @@ fix_point::fix_point(int32_t value) :
 m_data(value) //int32_t ctor calls should already be converted to fixpoint values
 { }
 
+std::int32_t fix_point::getData() {
+    return m_data;
+}
+
 float fix_point::to_float() const {
     float result = (float)(m_data * pow(2,-16));
     return result;
@@ -134,11 +138,17 @@ float frac(fix_point value) {
 }
 
 fix_point sin(fix_point angle) {
-    //TODO implement me
-    return fix_point(0);
+    // x−x^3/6+x^5/120
+    float x = angle.to_float();
+    float sin_x = x - (x * x * x)/6 + (x * x * x * x * x) / 120;
+    return fix_point(sin_x);
+    //TODO implement me without using floats
 }
 
 fix_point cos(fix_point angle) {
-    //TODO implement me
-    return fix_point(0);
+    // 1−x^2/2+x^4/24−x^6/720
+    float x = angle.to_float();
+    float cos_x = (1 - (x * x / 2)) + ((x * x * x * x) / 24) - ((x * x * x * x * x * x) / 720);
+    return fix_point(cos_x);
+    //TODO implement me without using floats
 }

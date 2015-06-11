@@ -57,9 +57,15 @@ public:
     fix_point(double value) {
         m_data = (IntegerType) ((float)std::round(value * std::pow(2, fixN)));
     }
+
     fix_point(IntegerType value) : //otherwise 'ambiguous conversion for functional-style cast from 'int' to 'fix_point''
         m_data(value) //int32_t ctor calls should already be converted to fixpoint values
         { }
+
+    IntegerType getData() const{
+        return m_data;
+    }
+
     float to_float() const {
         float result = (float)(m_data * pow(2,-fixN));
         return result;
@@ -72,12 +78,19 @@ public:
         temp = temp & (IntegerType)(std::pow(2, fixN) - 1); // cut off leading bits
         return (float)(temp * pow(2,-fixN)); // no bit shift because that would lead to 0 (integer stuff)
     }
-    fix_point operator+(fix_point rhs) const {
-        return fix_point(m_data + rhs.m_data);
+
+    template <typename fixpointType>
+    fixpointType operator+(fixpointType rhs) const {
+        const typename fixpointType::IntegerType sum = getData() + rhs.getData();
+        return fixpointType(sum);
     }
-    fix_point operator-(fix_point rhs) const {
-        return fix_point(m_data - rhs.m_data);
+
+    template <typename fixpointType>
+    fix_point operator-(fixpointType rhs) const {
+        const typename fixpointType::IntegerType sum = getData() - rhs.getData();
+        return fixpointType(sum);
     }
+
     fix_point operator*(fix_point rhs) const {
         //http://en.wikipedia.org/wiki/Q_(number_format)
         IntegerTypeDoublePrecision temp = (IntegerTypeDoublePrecision)m_data * (IntegerTypeDoublePrecision)rhs.m_data;
@@ -91,25 +104,27 @@ public:
     fix_point operator%(fix_point rhs) const  {
         return fix_point(m_data % rhs.m_data);
     }
-    bool operator==(fix_point rhs) const { //const weil is so, mal fragen
-        return m_data == rhs.m_data;
-    }
-    bool operator!=(fix_point rhs) const { return !operator==(rhs); };
+
     bool operator<(fix_point rhs) const {
         return m_data < rhs.m_data;
     }
+
     bool operator>(fix_point rhs) const {
         return m_data > rhs.m_data;
     }
+
     bool operator>=(fix_point rhs) const {
         return m_data > rhs.m_data || m_data == rhs.m_data;
     }
+
     bool operator<=(fix_point rhs) const {
         return m_data < rhs.m_data || m_data == rhs.m_data;
     }
+
     fix_point operator=(float value) {
         return fix_point(value);
     }
+
     fix_point operator++ () { // prefix
         m_data += pow(2,fixN);
         return *this; //'this' is a pointer '*this' is the dereferenced object
@@ -148,7 +163,7 @@ public:
         return *this;
     }
 
-    explicit operator float() const {  //explicit, otherwise ambigous '=='
+    operator float() const {  //explicit, otherwise ambigous '=='
         return to_float();
     }
     explicit operator int() const  { //explicit, otherwise ambigous '=='
@@ -185,5 +200,16 @@ fixpointType cos(fixpointType x) {
     fixpointType cos_x = (fixpointType(1.f) - (x * x / fixpointType(2.f))) + ((x * x * x * x) / fixpointType(24.f)) - ((x*x*x*x*x*x) / fixpointType(720.f)) + ((x*x*x*x*x*x*x*x) / fixpointType(40320.f));
     return cos_x;
 }
+
+template <typename fixpointType> //moved out of class because i had to remove the explicit from the float cast (test does "float == fix_point" which is bad, mkay?)
+bool operator==(fixpointType lhs, fixpointType rhs) {
+    return lhs.getData() == rhs.getData();
+}
+
+template <typename fixpointType>
+bool operator!=(fixpointType lhs, fixpointType rhs) {
+    return lhs.getData() != rhs.getData();
+}
+
 
 #endif //CPP_AUFGABE01_FIX_POINT_OO_H

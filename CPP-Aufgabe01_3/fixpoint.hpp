@@ -4,6 +4,7 @@
 
 #include <cstdint>
 #include <cmath>
+#include <iostream>
 
 #ifndef CPP_AUFGABE01_FIX_POINT_OO_H
 #define CPP_AUFGABE01_FIX_POINT_OO_H
@@ -50,12 +51,11 @@ public:
     { }
 
     fix_point(float value) {
-//        m_data = (IntegerType) std::round((value * 65536));
-        m_data = (IntegerType) std::round((value * std::pow(2, fixN)));
+        m_data = (IntegerType) std::round(value * std::pow(2, fixN));
     }
 
     fix_point(double value) {
-        m_data = (IntegerType) ((float)std::round(value * std::pow(2, fixN)));
+        m_data = (IntegerType) (std::round(value * std::pow(2, fixN)));
     }
 
     fix_point(IntegerType value) : //otherwise 'ambiguous conversion for functional-style cast from 'int' to 'fix_point''
@@ -67,57 +67,67 @@ public:
     }
 
     float to_float() const {
-        float result = (float)(m_data * pow(2,-fixN));
+        float result = (float)(m_data * std::pow(2,-fixN));
         return result;
     }
+
     float floor() const {
         return (float) (m_data >> fixN);
     }
     float frac() const  {
         IntegerType temp = m_data;
         temp = temp & (IntegerType)(std::pow(2, fixN) - 1); // cut off leading bits
-        return (float)(temp * pow(2,-fixN)); // no bit shift because that would lead to 0 (integer stuff)
+        return (float)(temp * std::pow(2,-fixN)); // no bit shift because that would lead to 0 (integer stuff)
     }
 
     template <typename fixpointType>
     fixpointType operator+(fixpointType rhs) const {
-        const typename fixpointType::IntegerType sum = getData() + rhs.getData();
+        IntegerType sum = getData() + rhs.getData();
         return fixpointType(sum);
     }
 
     template <typename fixpointType>
     fix_point operator-(fixpointType rhs) const {
-        const typename fixpointType::IntegerType sum = getData() - rhs.getData();
+        IntegerType sum = getData() - rhs.getData();
         return fixpointType(sum);
     }
 
-    fix_point operator*(fix_point rhs) const {
+    template <typename fixpointType>
+    fix_point operator*(fixpointType rhs) const {
         //http://en.wikipedia.org/wiki/Q_(number_format)
         IntegerTypeDoublePrecision temp = (IntegerTypeDoublePrecision)m_data * (IntegerTypeDoublePrecision)rhs.m_data;
         temp = temp / (IntegerTypeDoublePrecision)std::pow(2, fixN);
-        return fix_point((IntegerType)temp);
-    }
-    fix_point operator/(fix_point rhs) const {
-        IntegerTypeDoublePrecision temp = ((IntegerTypeDoublePrecision)m_data * (IntegerTypeDoublePrecision)std::pow(2, fixN)) / (IntegerTypeDoublePrecision)rhs.m_data;
-        return fix_point((IntegerType)temp);
-    }
-    fix_point operator%(fix_point rhs) const  {
-        return fix_point(m_data % rhs.m_data);
+        return fixpointType((IntegerType)temp);
     }
 
-    bool operator<(fix_point rhs) const {
+    template <typename fixpointType>
+    fix_point operator/(fixpointType rhs) const {
+        IntegerTypeDoublePrecision temp = ((IntegerTypeDoublePrecision)m_data * (IntegerTypeDoublePrecision)std::pow(2, fixN)) / (IntegerTypeDoublePrecision)rhs.m_data;
+        return fixpointType((IntegerType)temp);
+    }
+
+    template <typename fixpointType>
+    fix_point operator%(fixpointType rhs) const  {
+        return fixpointType(m_data % rhs.m_data);
+    }
+
+    template <typename fixpointType>
+    bool operator<(fixpointType rhs) const {
         return m_data < rhs.m_data;
     }
 
-    bool operator>(fix_point rhs) const {
+    template <typename fixpointType>
+    bool operator>(fixpointType rhs) const {
         return m_data > rhs.m_data;
     }
 
-    bool operator>=(fix_point rhs) const {
+    template <typename fixpointType>
+    bool operator>=(fixpointType rhs) const {
         return m_data > rhs.m_data || m_data == rhs.m_data;
     }
 
-    bool operator<=(fix_point rhs) const {
+    template <typename fixpointType>
+    bool operator<=(fixpointType rhs) const {
         return m_data < rhs.m_data || m_data == rhs.m_data;
     }
 
@@ -143,21 +153,29 @@ public:
         m_data -= pow(2,fixN);
         return temp;
     }
-    fix_point operator+= (fix_point rhs) {
+
+    template <typename fixpointType>
+    fix_point operator+= (fixpointType rhs) {
         m_data += rhs.m_data;
         return *this;
     }
-    fix_point operator-= (fix_point rhs) {
+
+    template <typename fixpointType>
+    fix_point operator-= (fixpointType rhs) {
         m_data -= rhs.m_data;
         return *this;
     }
-    fix_point operator*= (fix_point rhs) {
+
+    template <typename fixpointType>
+    fix_point operator*= (fixpointType rhs) {
         IntegerTypeDoublePrecision temp = (IntegerTypeDoublePrecision)m_data * (IntegerTypeDoublePrecision)rhs.m_data; //TODO this code already exists in / operator
         temp = temp / (IntegerTypeDoublePrecision)std::pow(2, fixN);
         m_data = (IntegerTypeDoublePrecision)temp;
         return *this;
     }
-    fix_point operator/= (fix_point rhs) {
+
+    template <typename fixpointType>
+    fix_point operator/= (fixpointType rhs) {
         IntegerTypeDoublePrecision temp = ((IntegerTypeDoublePrecision)m_data * (IntegerTypeDoublePrecision)std::pow(2, fixN)) / (IntegerTypeDoublePrecision)rhs.m_data; //TODO this code already exists in / operator
         m_data = (IntegerType)temp;
         return *this;
@@ -208,7 +226,7 @@ bool operator==(fixpointType lhs, fixpointType rhs) {
 
 template <typename fixpointType>
 bool operator!=(fixpointType lhs, fixpointType rhs) {
-    return lhs.getData() != rhs.getData();
+    return !(lhs == rhs);
 }
 
 

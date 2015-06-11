@@ -10,13 +10,11 @@ m_data(0)
 { }
 
 fix_point::fix_point(float value) {
-//    m_data = (std::int32_t) (value * 65536);
     m_data = (std::int32_t) std::round((value * 65536));
 }
 
 fix_point::fix_point(double value) {
-//    m_data = (std::int32_t) ((float)value * 65536);
-    m_data = (std::int32_t) ((float)std::round(value * 65536));
+    m_data = (std::int32_t) (std::round(value * 65536));
 }
 
 fix_point::fix_point(int32_t value) :

@@ -168,20 +168,17 @@ public:
 
     template <typename fixpointType>
     fix_point operator*= (fixpointType rhs) {
-        IntegerTypeDoublePrecision temp = (IntegerTypeDoublePrecision)m_data * (IntegerTypeDoublePrecision)rhs.m_data; //TODO this code already exists in / operator
-        temp = temp / (IntegerTypeDoublePrecision)std::pow(2, fixN);
-        m_data = (IntegerTypeDoublePrecision)temp;
+        m_data = (*this * rhs).m_data;
         return *this;
     }
 
     template <typename fixpointType>
     fix_point operator/= (fixpointType rhs) {
-        IntegerTypeDoublePrecision temp = ((IntegerTypeDoublePrecision)m_data * (IntegerTypeDoublePrecision)std::pow(2, fixN)) / (IntegerTypeDoublePrecision)rhs.m_data; //TODO this code already exists in / operator
-        m_data = (IntegerType)temp;
+        m_data = (*this / rhs).m_data;
         return *this;
     }
 
-    operator float() const {  //explicit, otherwise ambigous '=='
+    operator float() const {
         return to_float();
     }
     explicit operator int() const  { //explicit, otherwise ambigous '=='
@@ -221,6 +218,7 @@ fixpointType cos(fixpointType x) {
 
 template <typename fixpointType> //moved out of class because i had to remove the explicit from the float cast (test does "float == fix_point" which is bad, mkay?)
 bool operator==(fixpointType lhs, fixpointType rhs) {
+
     return lhs.getData() == rhs.getData();
 }
 

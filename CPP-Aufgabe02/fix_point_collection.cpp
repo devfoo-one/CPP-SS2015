@@ -71,7 +71,7 @@ const fix_point& fix_point_collection::operator[](unsigned int index) const {
 }
 
 fix_point& fix_point_collection::operator[](unsigned int index) {
-    if(index < m_size) { //TODO strange stuff going on here... value does not change when assigning a new one
+    if(index < m_size) {
         return m_data[index];
     }
     fix_point fp(0.f);

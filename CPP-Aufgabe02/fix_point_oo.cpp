@@ -80,8 +80,9 @@ bool fix_point::operator>=(fix_point rhs) const{
     return m_data > rhs.m_data || m_data == rhs.m_data;
 }
 
-fix_point fix_point::operator=(float value) {
-    return fix_point(value);
+fix_point& fix_point::operator=(float value) {
+    m_data = (std::int32_t) std::round((value * 65536));
+    return *this;
 }
 
 fix_point fix_point::operator++() {

@@ -23,7 +23,7 @@ public:
     fix_point operator*(fix_point rhs) const;
     fix_point operator/(fix_point rhs) const;
     fix_point operator%(fix_point rhs) const;
-    fix_point operator=(float value);
+    fix_point& operator=(float value);
     bool operator==(fix_point rhs) const;
     bool operator!=(fix_point rhs) const { return !operator==(rhs); };
     bool operator<(fix_point rhs) const;

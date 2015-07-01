@@ -33,7 +33,7 @@ fix_point fix_point_collection::pop_back() {
 }
 
 size_t fix_point_collection::size() const {
-    return size_t(m_size);
+    return (size_t) m_size;
 }
 
 fix_point fix_point_collection::sum() const {

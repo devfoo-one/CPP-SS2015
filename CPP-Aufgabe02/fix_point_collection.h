@@ -10,7 +10,7 @@
 
 class fix_point_collection {
 private:
-    unsigned int m_size = 0;
+    unsigned int m_size;
     std::unique_ptr<fix_point[]> m_data;
 public:
     fix_point_collection();

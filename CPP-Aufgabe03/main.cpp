@@ -35,7 +35,7 @@ fix_point dot_product_threads(std::vector<fix_point>& vec1, std::vector<fix_poin
 
     // split vectors in pieces for each thread
     // TODO: implement check if vectors have equal length
-    // TODO: if vector length is an odd number, this calculation will lead to missing elements
+    // TODO: if vector length is an odd number, or vectorSize % numberOfThread != 0 this calculation will lead to missing elements
     const unsigned int elementsPerThread = vectorSize / numberOfThreads;
 
     // create a vector that keeps all the threads
@@ -71,11 +71,11 @@ fix_point dotProductAsync(std::vector<fix_point>::iterator vec1FirstELement, std
 
 fix_point dot_product_async(std::vector<fix_point>& vec1, std::vector<fix_point>& vec2) {
 
-    const unsigned int numberOfFutures = 8;
+    const unsigned int numberOfFutures = 4;
 
     // split vectors in pieces for each future
     // TODO: implement check if vectors have equal length
-    // TODO: if vector length is an odd number, this calculation will lead to missing elements
+    // TODO: if vector length is an odd number, or vectorSize % numberOfThread != 0 this calculation will lead to missing elements
     const unsigned int elementsPerFuture = vectorSize / numberOfFutures;
 
     // create a vector that keeps all the futures
